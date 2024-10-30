@@ -3,13 +3,13 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import user_passes_test
 from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
 from .models import *
 from django.views.generic import ListView, CreateView, TemplateView, UpdateView, DeleteView
-from .forms import UserRegistrationForm, SubmissionForm, SubjectForm, CustomAuthenticationForm
+from .forms import UserRegistrationForm, SubmissionForm, SubjectForm, CustomAuthenticationForm, HomeworkCreateForm
 
 class RegistrationView(CreateView):
     model = User
@@ -135,3 +135,33 @@ class StudentGradeTableView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['is_admin'] = False  # Студенты не видят фильтра по классам
         return context
+    
+class HomeworkCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = Homework
+    form_class = HomeworkCreateForm
+    template_name = 'homework_create.html'
+    success_url = reverse_lazy('homeworks')
+
+    def form_valid(self, form):
+        form.instance.teacher = self.request.user
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def test_func(self):
+        return self.request.user.role == 'teacher'
+    
+class SubmissionListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Submission
+    template_name = 'submission_list.html'
+    context_object_name = 'submissions'
+
+    def get_queryset(self):
+        homework_id = self.kwargs.get('homework_id')
+        return Submission.objects.filter(homework__id=homework_id)
+
+    def test_func(self):
+        return self.request.user.role == 'teacher'

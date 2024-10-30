@@ -1,17 +1,18 @@
 {% load bootstrap4 %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Список домашних заданий</title>
+    <title>Управление заданиями</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="mb-4">Список домашних заданий</h2>
-        
+        <h2 class="mb-4">Управление заданиями</h2>
+
+        <a href="{% url 'homework_create' %}" class="btn btn-success mb-3">Добавить новое задание</a>
+
         {% if homeworks %}
             <div class="list-group">
                 {% for homework in homeworks %}
@@ -19,14 +20,16 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ homework.subject.name }}</h5>
                             <p class="card-text">{{ homework.description }}</p>
-                            <a href="{% url 'submit_homework' homework.id %}" class="btn btn-primary">Сдать задание</a>
+                            <p><strong>Классы:</strong> 
+                                {% for class in homework.classes.all %}
+                                    {{ class.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                            <a href="{% url 'submission_list' homework.id %}" class="btn btn-primary">Проверить выполнение</a>
                         </div>
                     </div>
                 {% endfor %}
             </div>
-            
-            <!-- Пагинация -->
-            {% bootstrap_pagination page_obj %}
         {% else %}
             <p>Нет доступных домашних заданий.</p>
         {% endif %}

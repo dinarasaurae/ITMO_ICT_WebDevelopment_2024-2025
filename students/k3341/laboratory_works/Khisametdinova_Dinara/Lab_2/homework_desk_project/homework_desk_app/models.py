@@ -33,6 +33,7 @@ class Homework(models.Model):
     due_period = models.DurationField()
     description = models.TextField()
     penalties_info = models.TextField(blank=True, null=True)
+    classes = models.ManyToManyField(Class, related_name='homeworks', blank=True)
 
     def __str__(self):
         return f"{self.subject.name} - {self.description[:20]}"
