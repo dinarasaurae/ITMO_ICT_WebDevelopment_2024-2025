@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Таблица оценок учеников</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">Таблица оценок учеников</h2>
+
+        {% if is_admin %}
+            <!-- Фильтр по классам доступен только администраторам -->
+            <form method="get" class="mb-3">
+                <div class="form-group">
+                    <label for="class_id">Выберите класс:</label>
+                    <select name="class_id" id="class_id" class="form-control" onchange="this.form.submit()">
+                        <option value="">Все классы</option>
+                        {% for class in classes %}
+                            <option value="{{ class.id }}" {% if class.id|stringformat:"s" == request.GET.class_id %}selected{% endif %}>
+                                {{ class.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+        {% endif %}
+
+        {% if submissions %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Ученик</th>
+                        {% if is_admin %}
+                            <th>Класс</th>
+                        {% endif %}
+                        <th>Задание</th>
+                        <th>Дата сдачи</th>
+                        <th>Оценка</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for submission in submissions %}
+                        <tr>
+                            <td>{{ submission.student.username }}</td>
+                            {% if is_admin %}
+                                <td>{{ submission.student.student_class.name }}</td>
+                            {% endif %}
+                            <td>{{ submission.homework.subject.name }}</td>
+                            <td>{{ submission.submitted_at|date:"d.m.Y H:i" }}</td>
+                            <td>{{ submission.grade|default:"Не оценено" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="alert alert-warning">Нет данных о сдачах заданий.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
