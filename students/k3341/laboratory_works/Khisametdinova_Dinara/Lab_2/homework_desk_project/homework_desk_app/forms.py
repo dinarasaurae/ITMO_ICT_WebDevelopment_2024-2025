@@ -66,21 +66,18 @@ class SubmissionForm(forms.ModelForm):
         }
 
 class HomeworkCreateForm(forms.ModelForm):
-    classes = forms.ModelMultipleChoiceField(
-        queryset=Class.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False,
-        label='Классы'
-    )
-
     class Meta:
         model = Homework
-        fields = ['subject', 'issued_date', 'due_period', 'description', 'penalties_info', 'classes']
+        fields = ['subject', 'issued_date', 'due_period', 'description', 'penalties_info']
+        widgets = {
+            'issued_date': forms.DateInput(attrs={'type': 'date'}),
+            'due_period': forms.NumberInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+            'penalties_info': forms.Textarea(attrs={'class': 'form-control'}),
+        }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-
-        # Ограничиваем выбор предметов только теми, которые ведет учитель
-        if user and user.role == 'teacher':
-            self.fields['subject'].queryset = user.subjects.all()
+        if user:
+            self.fields['subject'].queryset = Subject.objects.filter(teachers=user)

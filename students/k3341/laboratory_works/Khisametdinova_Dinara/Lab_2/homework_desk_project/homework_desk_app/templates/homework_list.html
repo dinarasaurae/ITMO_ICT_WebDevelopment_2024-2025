@@ -1,4 +1,3 @@
-{% load bootstrap4 %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +10,8 @@
     <div class="container mt-5">
         <h2 class="mb-4">Управление заданиями</h2>
 
-        <a href="{% url 'homework_create' %}" class="btn btn-success mb-3">Добавить новое задание</a>
+        <!-- Кнопка добавления нового задания -->
+        <a href="{% url 'homework_create' %}" class="btn btn-success mb-4">Добавить новое задание</a>
 
         {% if homeworks %}
             <div class="list-group">
@@ -20,11 +20,8 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ homework.subject.name }}</h5>
                             <p class="card-text">{{ homework.description }}</p>
-                            <p><strong>Классы:</strong> 
-                                {% for class in homework.classes.all %}
-                                    {{ class.name }}{% if not forloop.last %}, {% endif %}
-                                {% endfor %}
-                            </p>
+                            <p><strong>Преподаватели:</strong> {{ homework.subject.teachers.all|join:", " }}</p>
+                            <!-- Кнопка проверки выполнения -->
                             <a href="{% url 'submission_list' homework.id %}" class="btn btn-primary">Проверить выполнение</a>
                         </div>
                     </div>

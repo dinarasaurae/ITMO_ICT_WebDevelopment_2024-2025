@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login
@@ -10,6 +9,7 @@ from django.urls import reverse_lazy
 from .models import *
 from django.views.generic import ListView, CreateView, TemplateView, UpdateView, DeleteView
 from .forms import UserRegistrationForm, SubmissionForm, SubjectForm, CustomAuthenticationForm, HomeworkCreateForm
+from .decorators import student_required, teacher_required
 
 class RegistrationView(CreateView):
     model = User
@@ -143,7 +143,9 @@ class HomeworkCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     success_url = reverse_lazy('homeworks')
 
     def form_valid(self, form):
-        form.instance.teacher = self.request.user
+        homework = form.save(commit=False)
+        homework.save()
+        homework.teachers.add(self.request.user)
         return super().form_valid(form)
 
     def get_form_kwargs(self):
@@ -165,3 +167,33 @@ class SubmissionListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def test_func(self):
         return self.request.user.role == 'teacher'
+
+class HomeworkManagementView(LoginRequiredMixin, ListView):
+    model = Homework
+    template_name = 'homework_list.html'
+    context_object_name = 'homeworks'
+
+    @method_decorator(teacher_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'teacher':
+            return Homework.objects.filter(subject__teachers=user)
+        return Homework.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['homework_form'] = HomeworkCreateForm()
+        return context
+
+@method_decorator(student_required, name='dispatch')
+class StudentHomeworkListView(LoginRequiredMixin, ListView):
+    model = Homework
+    template_name = 'student_homework_list.html'  # Шаблон для студента
+    context_object_name = 'homeworks'
+
+    def get_queryset(self):
+        # Студенты видят все доступные домашние задания
+        return Homework.objects.all()    

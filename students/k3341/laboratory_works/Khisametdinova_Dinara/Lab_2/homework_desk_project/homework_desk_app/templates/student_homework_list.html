@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Домашние задания</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">Ваши домашние задания</h2>
+        {% for homework in homeworks %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">{{ homework.subject.name }}</h5>
+                    <p class="card-text">{{ homework.description }}</p>
+                    <a href="{% url 'submit_homework' homework.id %}" class="btn btn-primary">Сдать задание</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

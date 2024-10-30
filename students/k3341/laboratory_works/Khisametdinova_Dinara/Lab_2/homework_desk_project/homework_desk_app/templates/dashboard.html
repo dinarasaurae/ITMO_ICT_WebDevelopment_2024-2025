@@ -28,7 +28,7 @@
             <a href="{% url 'student_grade_table' %}" class="btn btn-primary mb-3">Мои оценки</a>
 
             <!-- Ссылка на просмотр всех домашних заданий -->
-            <a href="{% url 'homework_list' %}" class="btn btn-info mb-3">Просмотр заданий</a>
+            <a href="{% url 'student_homeworks' %}" class="btn btn-info mb-3">Просмотр заданий</a>
 
             <!-- Ссылка на сдачу нового задания -->
             <a href="{% url 'submit_homework' homework_id=1 %}" class="btn btn-success mb-3">Прикрепить задание</a> <!-- homework_id нужно динамически получать -->

@@ -8,6 +8,7 @@ urlpatterns = [
     path('login/', views.CustomLoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
     path('homeworks/', views.HomeworkListView.as_view(), name='homework_list'),
+    path('student/homeworks/', views.StudentHomeworkListView.as_view(), name='student_homeworks'),
     path('homeworks/create/', views.HomeworkCreateView.as_view(), name='homework_create'),
     path('homeworks/<int:homework_id>/submit/', views.SubmissionCreateView.as_view(), name='submit_homework'),
     path('homeworks/<int:homework_id>/submissions/', views.SubmissionListView.as_view(), name='submission_list'),
