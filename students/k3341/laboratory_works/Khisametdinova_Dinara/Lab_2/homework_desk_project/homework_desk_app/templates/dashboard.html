@@ -23,66 +23,55 @@
 
         {% if is_student %}
             <h4>Ваши домашние задания и оценки:</h4>
-            
+
+            <!-- Кнопка для просмотра таблицы оценок студента -->
+            <a href="{% url 'student_grade_table' %}" class="btn btn-primary mb-3">Мои оценки</a>
+
             <!-- Ссылка на просмотр всех домашних заданий -->
             <a href="{% url 'homework_list' %}" class="btn btn-info mb-3">Просмотр заданий</a>
 
             <!-- Ссылка на сдачу нового задания -->
-            <a href="{% url 'submit_homework' homework_id=1 %}" class="btn btn-success mb-3">Прикрепить задание</a>  <!-- homework_id нужно динамически получать -->
-            
-            <!-- Таблица сдач -->
-            {% if submissions %}
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Задание</th>
-                            <th>Дата сдачи</th>
-                            <th>Оценка</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for submission in submissions %}
-                            <tr>
-                                <td>{{ submission.homework.subject.name }}</td>
-                                <td>{{ submission.submitted_at|date:"d.m.Y H:i" }}</td>
-                                <td>{{ submission.grade|default:"Не оценено" }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p class="alert alert-warning">Нет данных о сдачах заданий.</p>
-            {% endif %}
+            <a href="{% url 'submit_homework' homework_id=1 %}" class="btn btn-success mb-3">Прикрепить задание</a> <!-- homework_id нужно динамически получать -->
 
         {% else %}
             <h4>Оценки всех студентов:</h4>
-            <!-- Таблица сдач для учителя -->
-            {% if submissions %}
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Ученик</th>
+
+            <!-- Кнопка для просмотра таблицы оценок всех студентов -->
+            <a href="{% url 'admin_grade_table' %}" class="btn btn-primary mb-3">Оценки всех студентов</a>
+            
+            <!-- Ссылка на просмотр всех домашних заданий -->
+            <a href="{% url 'homework_list' %}" class="btn btn-info mb-3">Управление заданиями</a>
+        {% endif %}
+
+        {% if submissions %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Ученик</th>
+                        {% if not is_student %}
                             <th>Класс</th>
-                            <th>Задание</th>
-                            <th>Дата сдачи</th>
-                            <th>Оценка</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for submission in submissions %}
-                            <tr>
-                                <td>{{ submission.student.username }}</td>
+                        {% endif %}
+                        <th>Задание</th>
+                        <th>Дата сдачи</th>
+                        <th>Оценка</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for submission in submissions %}
+                        <tr>
+                            <td>{{ submission.student.username }}</td>
+                            {% if not is_student %}
                                 <td>{{ submission.student.student_class.name }}</td>
-                                <td>{{ submission.homework.subject.name }}</td>
-                                <td>{{ submission.submitted_at|date:"d.m.Y H:i" }}</td>
-                                <td>{{ submission.grade|default:"Не оценено" }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p class="alert alert-warning">Нет данных о сдачах заданий.</p>
-            {% endif %}
+                            {% endif %}
+                            <td>{{ submission.homework.subject.name }}</td>
+                            <td>{{ submission.submitted_at|date:"d.m.Y H:i" }}</td>
+                            <td>{{ submission.grade|default:"Не оценено" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="alert alert-warning">Нет данных о сдачах заданий.</p>
         {% endif %}
     </div>
 </body>

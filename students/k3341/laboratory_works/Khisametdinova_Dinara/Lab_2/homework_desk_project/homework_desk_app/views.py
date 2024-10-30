@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .forms import UserRegistrationForm, SubmissionForm, SubjectForm, CustomAuthenticationForm
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView
@@ -9,6 +9,7 @@ from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
 from .models import *
 from django.views.generic import ListView, CreateView, TemplateView, UpdateView, DeleteView
+from .forms import UserRegistrationForm, SubmissionForm, SubjectForm, CustomAuthenticationForm
 
 class RegistrationView(CreateView):
     model = User
@@ -63,6 +64,10 @@ class HomeworkListView(ListView):
     model = Homework
     template_name = 'homework_list.html'
     context_object_name = 'homeworks'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Homework.objects.select_related('subject')
 
 class SubjectCreateView(CreateView):
     model = Subject

@@ -1,3 +1,5 @@
+{% load bootstrap4 %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,6 +24,9 @@
                     </div>
                 {% endfor %}
             </div>
+            
+            <!-- Пагинация -->
+            {% bootstrap_pagination page_obj %}
         {% else %}
             <p>Нет доступных домашних заданий.</p>
         {% endif %}

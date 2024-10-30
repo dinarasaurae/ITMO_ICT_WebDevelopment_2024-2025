@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
+    'django.contrib.humanize',
+    'bootstrap4',
     'homework_desk_app'
 ]
 
