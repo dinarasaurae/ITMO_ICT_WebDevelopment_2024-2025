@@ -98,7 +98,7 @@ class SubmissionCreateView(CreateView):
     
 def is_admin_or_teacher(user):
     return user.is_superuser or user.role == 'teacher'
-
+'''
 @method_decorator(user_passes_test(is_admin_or_teacher), name='dispatch')
 class AdminGradeTableView(ListView):
     model = Submission
@@ -119,6 +119,39 @@ class AdminGradeTableView(ListView):
         context = super().get_context_data(**kwargs)
         context['classes'] = Class.objects.all()
         context['is_admin'] = True  # Администратор видит больше данных
+        return context
+'''
+@method_decorator(user_passes_test(is_admin_or_teacher), name='dispatch')
+class AdminGradeTableView(ListView):
+    model = Submission
+    template_name = 'grade_table.html'
+    context_object_name = 'submissions'
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = Submission.objects.select_related('student', 'homework', 'homework__subject')
+        class_id = self.request.GET.get('class_id')
+        subject_id = self.request.GET.get('subject_id')
+
+        # Фильтрация по выбранному классу (включая пустые значения для "всех классов")
+        if class_id:
+            queryset = queryset.filter(student__student_class_id=class_id)
+        else:
+            queryset = queryset.filter(student__student_class__isnull=True) | queryset
+
+        # Фильтрация по выбранному предмету
+        if subject_id:
+            queryset = queryset.filter(homework__subject_id=subject_id)
+        
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['classes'] = Class.objects.all()
+        context['subjects'] = Subject.objects.all()
+        context['selected_class_id'] = self.request.GET.get('class_id', '')
+        context['selected_subject_id'] = self.request.GET.get('subject_id', '')
+        context['is_admin'] = True
         return context
 
 class StudentGradeTableView(LoginRequiredMixin, ListView):

@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'widget_tweaks',
     'django.contrib.humanize',
+    'search.apps.SearchConfig',
+    'django.contrib.postgres',
     'bootstrap4',
     'homework_desk_app'
 ]

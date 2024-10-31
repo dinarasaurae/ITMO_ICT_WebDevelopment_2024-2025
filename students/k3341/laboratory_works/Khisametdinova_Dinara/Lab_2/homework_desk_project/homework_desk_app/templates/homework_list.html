@@ -1,35 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Управление заданиями</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
-    <div class="container mt-5">
-        <h2 class="mb-4">Управление заданиями</h2>
+{% extends 'base.html' %}
+{% load bootstrap4 %}
 
-        <!-- Кнопка добавления нового задания -->
-        <a href="{% url 'homework_create' %}" class="btn btn-success mb-4">Добавить новое задание</a>
+{% block title %}Управление заданиями{% endblock %}
+{% block content %}
+    <h2 class="mb-4">Управление заданиями</h2>
 
-        {% if homeworks %}
-            <div class="list-group">
-                {% for homework in homeworks %}
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ homework.subject.name }}</h5>
-                            <p class="card-text">{{ homework.description }}</p>
-                            <p><strong>Преподаватели:</strong> {{ homework.subject.teachers.all|join:", " }}</p>
-                            <!-- Кнопка проверки выполнения -->
-                            <a href="{% url 'submission_list' homework.id %}" class="btn btn-primary">Проверить выполнение</a>
-                        </div>
+    <!-- Кнопка добавления нового задания -->
+    <a href="{% url 'homework_create' %}" class="btn btn-success mb-4">Добавить новое задание</a>
+
+    {% if homeworks %}
+        <div class="list-group">
+            {% for homework in homeworks %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ homework.subject.name }}</h5>
+                        <p class="card-text">{{ homework.description }}</p>
+                        <p><strong>Преподаватели:</strong> {{ homework.subject.teachers.all|join:", " }}</p>
+                        <!-- Кнопка проверки выполнения -->
+                        <a href="{% url 'submission_list' homework.id %}" class="btn btn-primary">Проверить выполнение</a>
                     </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p>Нет доступных домашних заданий.</p>
-        {% endif %}
-    </div>
-</body>
-</html>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Нет доступных домашних заданий.</p>
+    {% endif %}
+{% endblock %}
