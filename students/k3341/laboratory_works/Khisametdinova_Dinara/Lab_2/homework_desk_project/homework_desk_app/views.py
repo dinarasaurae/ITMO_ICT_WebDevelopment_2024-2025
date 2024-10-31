@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
 from .models import *
 from django.views.generic import ListView, CreateView, TemplateView, UpdateView, DeleteView
-from .forms import UserRegistrationForm, SubmissionForm, SubjectForm, CustomAuthenticationForm, HomeworkCreateForm
+from .forms import UserRegistrationForm, SubmissionForm, SubjectForm, CustomAuthenticationForm, HomeworkCreateForm, GradeSubmissionForm
 from .decorators import student_required, teacher_required
 
 class RegistrationView(CreateView):
@@ -188,7 +188,7 @@ class HomeworkCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def test_func(self):
         return self.request.user.role == 'teacher'
-    
+'''   
 class SubmissionListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Submission
     template_name = 'submission_list.html'
@@ -200,6 +200,58 @@ class SubmissionListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def test_func(self):
         return self.request.user.role == 'teacher'
+'''
+'''
+class SubmissionListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Submission
+    template_name = 'submission_list.html'
+    context_object_name = 'submissions'
+
+    def get_queryset(self):
+        homework_id = self.request.GET.get('homework_id')
+        return Submission.objects.filter(homework__id=homework_id)
+
+    def test_func(self):
+        return self.request.user.role == 'teacher'
+    
+class SubmissionGradeView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Submission
+    form_class = GradeSubmissionForm
+    template_name = 'grade_submission.html'
+    context_object_name = 'submission'
+
+    def get_success_url(self):
+        return reverse_lazy('submission_list')
+
+    def test_func(self):
+        return self.request.user.role == 'teacher'
+'''
+class SubmissionListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Submission
+    template_name = 'submission_list.html'
+    context_object_name = 'submissions'
+
+    def get_queryset(self):
+        return Submission.objects.all()  # Возвращаем все выполненные задания
+
+    def test_func(self):
+        return self.request.user.role == 'teacher'
+    
+class SubmissionGradeView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Submission
+    template_name = 'grade_submission.html'
+    context_object_name = 'submission'
+    fields = ['grade']
+
+    def get_object(self):
+        submission_id = self.kwargs.get('submission_id')
+        return get_object_or_404(Submission, id=submission_id)
+
+    def test_func(self):
+        return self.request.user.role == 'teacher'
+
+    def get_success_url(self):
+        return reverse_lazy('submission_list')
 
 class HomeworkManagementView(LoginRequiredMixin, ListView):
     model = Homework

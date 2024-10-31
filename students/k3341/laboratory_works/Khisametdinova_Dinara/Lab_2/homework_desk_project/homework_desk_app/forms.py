@@ -81,3 +81,8 @@ class HomeworkCreateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if user:
             self.fields['subject'].queryset = Subject.objects.filter(teachers=user)
+
+class GradeSubmissionForm(forms.ModelForm):
+    class Meta:
+        model = Submission
+        fields = ['grade']

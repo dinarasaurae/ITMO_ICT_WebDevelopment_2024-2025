@@ -30,7 +30,7 @@
                             <td>{{ submission.submitted_at|date:"d.m.Y H:i" }}</td>
                             <td>{{ submission.grade|default:"Не оценено" }}</td>
                             <td>
-                                <a href="{% url 'submission_list' submission.id %}" class="btn btn-warning btn-sm">Оценить</a>
+                                <a href="{% url 'grade_submission' submission.id %}" class="btn btn-warning btn-sm">Оценить</a>
                             </td>
                         </tr>
                     {% endfor %}
