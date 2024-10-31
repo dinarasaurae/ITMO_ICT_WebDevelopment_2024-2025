@@ -11,7 +11,6 @@
     <div class="container mt-5">
         <h2 class="mb-4 text-center">Панель управления</h2>
 
-        <!-- Профиль пользователя -->
         <div class="card mb-4">
             <div class="card-body">
                 <h4 class="card-title">Профиль пользователя</h4>
@@ -24,22 +23,17 @@
         {% if is_student %}
             <h4>Ваши домашние задания и оценки:</h4>
 
-            <!-- Кнопка для просмотра таблицы оценок студента -->
             <a href="{% url 'student_grade_table' %}" class="btn btn-primary mb-3">Мои оценки</a>
 
-            <!-- Ссылка на просмотр всех домашних заданий -->
             <a href="{% url 'student_homeworks' %}" class="btn btn-info mb-3">Просмотр заданий</a>
 
-            <!-- Ссылка на сдачу нового задания -->
-            <a href="{% url 'submit_homework' homework_id=1 %}" class="btn btn-success mb-3">Прикрепить задание</a> <!-- homework_id нужно динамически получать -->
+            <a href="{% url 'submit_homework' homework_id=1 %}" class="btn btn-success mb-3">Прикрепить задание</a> 
 
         {% else %}
             <h4>Оценки всех студентов:</h4>
 
-            <!-- Кнопка для просмотра таблицы оценок всех студентов -->
             <a href="{% url 'admin_grade_table' %}" class="btn btn-primary mb-3">Оценки всех студентов</a>
             
-            <!-- Ссылка на просмотр всех домашних заданий -->
             <a href="{% url 'submission_list' %}" class="btn btn-info mb-3">Управление заданиями</a>
         {% endif %}
 

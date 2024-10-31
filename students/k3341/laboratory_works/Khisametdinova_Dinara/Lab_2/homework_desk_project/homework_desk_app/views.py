@@ -161,12 +161,12 @@ class StudentGradeTableView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        # Фильтруем только по записям текущего пользователя
+        # Фильтррр только по записям текущего пользователя
         return Submission.objects.filter(student=self.request.user).select_related('homework', 'student')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['is_admin'] = False  # Студенты не видят фильтра по классам
+        context['is_admin'] = False 
         return context
     
 class HomeworkCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -276,9 +276,9 @@ class HomeworkManagementView(LoginRequiredMixin, ListView):
 @method_decorator(student_required, name='dispatch')
 class StudentHomeworkListView(LoginRequiredMixin, ListView):
     model = Homework
-    template_name = 'student_homework_list.html'  # Шаблон для студента
+    template_name = 'student_homework_list.html' 
     context_object_name = 'homeworks'
 
     def get_queryset(self):
-        # Студенты видят все доступные домашние задания
+        # Студенты видят все доступные дз
         return Homework.objects.all()    

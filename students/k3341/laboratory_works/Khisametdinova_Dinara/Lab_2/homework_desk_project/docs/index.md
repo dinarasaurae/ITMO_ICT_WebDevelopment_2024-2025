@@ -13,6 +13,13 @@
     - [Task 5](lab1/task5.md)
 - LAB №2:
     - [Data](lab2/data.md)
+    - [Registration](lab2/registration.md)
+    - [Authorization](lab2/authorization.md)
+    - [Dashboard](lab2/dashboard.md)
+    - [Menu](lab2/menu.md)
+    - [Search](lab2/search.md)
+    - [Submission](lab2/submission.md)
+    - [Homework](lab2/homeworks.md)
 - [LAB №3](lab3.md)
 - [LAB №4](lab4.md)
 
