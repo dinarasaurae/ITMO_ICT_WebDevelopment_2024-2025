@@ -3,7 +3,7 @@ name: Deploy MkDocs Site
 on:
   push:
     branches:
-      - gh-pages  # Запуск при изменениях в ветке main
+      - Lr3  # Запуск при изменениях в ветке main
 
 jobs:
   deploy:
