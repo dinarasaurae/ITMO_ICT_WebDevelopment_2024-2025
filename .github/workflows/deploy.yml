@@ -1,0 +1,36 @@
+name: Deploy MkDocs Site
+
+on:
+  push:
+    branches:
+      - Lr3
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install mkdocs mkdocs-material
+
+      - name: Build MkDocs site
+        run: mkdocs build --config-file homework_desk_project/mkdocs.yml
+
+      - name: Create .nojekyll file
+        run: echo "" > homework_desk_project/site/.nojekyll
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: homework_desk_project/site
+          publish_branch: gh-pages
