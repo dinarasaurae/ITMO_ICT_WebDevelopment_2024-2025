@@ -3,7 +3,7 @@ name: Deploy MkDocs Site
 on:
   push:
     branches:
-      - gh-pages
+      - gh-pages  # Запуск при изменениях в ветке main
 
 jobs:
   deploy:
@@ -22,15 +22,7 @@ jobs:
         run: |
           pip install mkdocs mkdocs-material
 
-      - name: Build MkDocs site
-        run: mkdocs build --config-file homework_desk_project/mkdocs.yml
-
-      - name: Create .nojekyll file
-        run: echo "" > homework_desk_project/site/.nojekyll
-
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: homework_desk_project/site
-          publish_branch: gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: mkdocs gh-deploy --force
